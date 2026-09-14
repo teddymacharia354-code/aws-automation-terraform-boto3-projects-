@@ -110,21 +110,20 @@ pip install boto3
 pip show boto3
 ```
 
-Why are we using a virtual environment? It keeps this project's Python packages separate from the rest of the system.
+A virtual environment keeps this project's Python packages separate from the rest of the system.
 
 ## Step 5: Create the project directory
 
 ```bash
 mkdir -p ~/terraform-boto3-projects/project-01-ec2-from-zero/terraform
 cd ~/terraform-boto3-projects/project-01-ec2-from-zero
-mkdir -p python screenshots
 cd terraform
 ```
 
 The final project will look like this:
 
 ```
-project-01-ec2-from-zero/
+project-01-ec2-infrastructure-automation/
 |
 |-- terraform/
 |   |-- provider.tf
@@ -137,8 +136,6 @@ project-01-ec2-from-zero/
 |-- python/
 |   |-- ec2_manager.py
 |   `-- requirements.txt
-|
-`-- screenshots/
 ```
 
 ## Step 6: Create the Terraform provider
@@ -200,7 +197,7 @@ variable "instance_type" {
 variable "instance_name" {
   description = "Name tag for the EC2 instance"
   type        = string
-  default     = "terraformboto3inst1"
+  default     = "terraform-boto3-inst-1"
 }
 
 # The EC2 key pair name.
@@ -542,7 +539,7 @@ From the Terraform directory:
 terraform init
 ```
 
-**What does `terraform init` do?** Terraform downloads the providers required by the project. In this project, that means the AWS provider. You should see a successful initialization message.
+when you run terraform init, Terraform downloads the providers required by the project. In this project, that means the AWS provider. You should see a successful initialization message.
 
 ## Step 13: Format the Terraform code
 
@@ -560,12 +557,6 @@ terraform plan
 ```
 
 Terraform now compares the configuration with the current AWS environment and creates a plan. At this point, nothing should be created yet.
-
-This is a good screenshot for the video and GitHub repository. Save it as:
-
-```
-screenshots/02-terraform-plan.png
-```
 
 ## Step 15: Create the infrastructure
 
@@ -586,11 +577,6 @@ Terraform should create:
 - EC2 instance
 - Elastic IP
 
-When it finishes, Terraform will print the outputs. Take a screenshot. Suggested filename:
-
-```
-screenshots/03-terraform-apply.png
-```
 
 ## Step 16: Check the EC2 instance
 
@@ -600,7 +586,7 @@ terraform output public_ip
 terraform output
 ```
 
-Open the EC2 console and confirm that the instance is running. Look for the name `terraformboto3inst1`. Take a screenshot.
+Open the EC2 console and confirm that the instance is running. Look for the name `terraform-boto3-inst-1`. 
 
 ## Step 17: Test the web server
 
@@ -626,12 +612,6 @@ Security Group
 EC2
    |
 Apache
-```
-
-is working. Take a screenshot for the repository. Suggested filename:
-
-```
-screenshots/04-ec2-web-page.png
 ```
 
 ## Step 18: Prepare Python/Boto3
@@ -704,7 +684,7 @@ elif user_option == '4':
 
 The program runs as a single interactive script. It uses the AWS credentials available to the CloudShell session.
 
-The EC2 IAM role created by Terraform is attached to the EC2 server itself. It is not automatically the identity used by Python running in CloudShell. This is an important distinction to explain in the video.
+The EC2 IAM role created by Terraform is attached to the EC2 server itself. It is not automatically the identity used by Python running in CloudShell. 
 
 ## Step 20: List EC2 instances with Python
 
@@ -714,11 +694,7 @@ python3 ec2_manager.py
 
 Choose option `1`. The program calls the EC2 API and displays each instance's ID and state.
 
-Take a screenshot. Suggested filename:
 
-```
-screenshots/07-python-list.png
-```
 
 ## Step 21: Stop the instance
 
@@ -765,34 +741,9 @@ You should always clean up the project when you are finished to avoid unexpected
 
 ---
 
-## Important note about Terraform state
-
-Terraform creates a local state file: `terraform.tfstate`. Do not upload this file to GitHub. The `.gitignore` in the project excludes Terraform state and other local files.
-
-## Availability Zones
-
-The walkthrough uses `us-east-1a` because the project is being demonstrated in `us-east-1`.
-
-For this project, the walkthrough can use:
-- us-east-1a
-- us-east-1b
-- us-east-1c
-- us-east-1d
-
-Do not use `us-east-1e` or `us-east-1f` for this specific walkthrough.
-
-For other learners, the guide should not claim that these letters exist in every AWS region. Availability Zones are region-specific and can differ between AWS accounts. If someone uses another region, they should choose an Availability Zone that actually exists and is available to their account.
-
-## Instance type
-
-This tutorial defaults to `t3.micro`. The important lesson is not the specific instance type. If a learner's region or account does not offer `t3.micro`, they should choose a small instance type available to their account and adjust `instance_type`.
-
-Always check current AWS pricing and Free Tier eligibility before creating resources.
-
 ## Security note
 
 The example SSH rule uses `0.0.0.0/0` because it makes the first tutorial easier to follow. That means SSH is reachable from the internet.
 
 For a real environment, replace it with your own public IP: `YOUR_PUBLIC_IP/32`
 
-Do not copy the tutorial's open SSH rule into production systems without understanding the risk.
